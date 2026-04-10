@@ -71,10 +71,83 @@ On first setup, the integration checks `GET /health` then `GET /api/v1/status` w
 ## Features
 
 - **Sensors**: platform (`win32`, etc.), **Windows** binary, **Presence** (API reachability based on `/api/v1/status` polling).
-- **Select + buttons**: refresh the Start Menu app list, launch the selected app (Windows only).
+- **Select + text + buttons**: refresh the Start Menu app list, pick an app from the list **or** type a full `.exe` path in **Custom executable path**, then press **Launch selected application** (Windows only).
 - **Services**: `computer_companion.power` (shutdown, restart, sleep, hibernate, abort) and `computer_companion.launch` (path + optional arguments).
 
 Sensitive actions (shutdown, launching executables) require a **trusted network** and a **well-protected token**.
+
+### Why a text field instead of a “free” select?
+
+Home Assistant **`select`** entities only allow choosing from a **fixed list** of options. They cannot accept arbitrary typed text. To launch a path that is not in the scanned list **from the UI with the same launch button**, use the **`text`** entity **Custom executable path**: when it is non-empty, **Launch selected application** uses that path first; otherwise it uses the option selected in **Application to launch**.
+
+### Custom applications (any executable)
+
+You do **not** need an app to appear in the scanned list. The desktop agent accepts **any absolute path** to an existing `.exe` (see its API: `POST /api/v1/apps/launch`).
+
+**From the UI:** set **Custom executable path** (e.g. `D:\Apps\Tool\tool.exe`) and press **Launch selected application**. Clear the text field when you want the button to use only the **Application to launch** select again.
+
+**From YAML / automations**, you can either set that text entity then press the button, or call the service **`computer_companion.launch`**:
+
+| Field | Description |
+|-------|-------------|
+| `config_entry` | Your Computer Companion config entry ID (same as in **Developer tools → Services** when you pick the integration in the UI). |
+| `path` | Full path to the executable, e.g. `C:\Games\SomeGame\game.exe`. |
+| `args` | Optional list of command-line arguments (strings). |
+
+Example (adjust `config_entry` — copy from **Settings → Devices & services → Computer Companion** → the three-dot menu on the integration, or use the **Services** UI once to fill it automatically):
+
+```yaml
+action: computer_companion.launch
+data:
+  config_entry: YOUR_CONFIG_ENTRY_ID
+  path: "D:\\Apps\\MyApp\\app.exe"
+  args: ["--some-flag"]
+```
+
+### Example script: launch an app from the scanned list
+
+Use the **Application to launch** select (the **option** value must match a label from the list, e.g. `Steam`) and then press **Launch selected application**.
+
+Copy the real `entity_id` values from **Developer tools → States** or from the device — they depend on the host name and UI language (suffixes like `application_to_launch` vs French `application_a_lancer`, etc.).
+
+```yaml
+alias: Launch Steam
+description: ""
+mode: single
+sequence:
+  - action: select.select_option
+    target:
+      entity_id: select.192_168_1_33_application_a_lancer
+    data:
+      option: Steam
+  - action: button.press
+    target:
+      entity_id: button.192_168_1_33_lancer_l_application_selectionnee
+    data: {}
+```
+
+If your UI is in English, the same entities might look like `select.192_168_1_33_application_to_launch` and `button.192_168_1_33_launch_selected_application`. Use the **exact** option string shown for the select (including duplicate disambiguation like `Steam (1)` if applicable).
+
+### Example script: custom path + same launch button
+
+Set the full path in the **Custom executable path** text entity, then press **Launch selected application** (entity IDs depend on your host / language):
+
+```yaml
+alias: Launch custom exe
+mode: single
+sequence:
+  - action: text.set_value
+    target:
+      entity_id: text.192_168_1_33_custom_executable_path
+    data:
+      value: "D:\\Games\\Launcher\\game.exe"
+  - action: button.press
+    target:
+      entity_id: button.192_168_1_33_lancer_l_application_selectionnee
+    data: {}
+```
+
+Use your real `text.*` entity id from **Developer tools** (suffix may differ, e.g. `custom_executable_path` in English).
 
 ---
 
