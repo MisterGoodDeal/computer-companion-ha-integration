@@ -64,6 +64,9 @@
       },
       "power_abort": {
         "name": "Annuler l'arrêt"
+      },
+      "wake_on_lan": {
+        "name": "Wake on LAN"
       }
     }
   },
