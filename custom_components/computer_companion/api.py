@@ -10,6 +10,7 @@ from .const import (
     API_APPS_PATH,
     API_HEALTH_PATH,
     API_LAUNCH_PATH,
+    API_NETWORK_MAC_PATH,
     API_POWER_PATH,
     API_STATUS_PATH,
 )
@@ -63,6 +64,23 @@ class ComputerCompanionApi:
                     text = await resp.text()
                     raise ComputerCompanionApiError(f"HTTP {resp.status}: {text[:200]}")
                 return await resp.json()
+        except (aiohttp.ClientError, asyncio.TimeoutError) as err:
+            raise ComputerCompanionApiError(str(err)) from err
+
+    async def get_network_mac(self) -> dict[str, Any]:
+        url = self._base.join(URL(API_NETWORK_MAC_PATH))
+        try:
+            async with self._session.get(
+                url, headers=self._auth, timeout=TIMEOUT_DEFAULT
+            ) as resp:
+                if resp.status == 401:
+                    raise ComputerCompanionAuthError()
+                if resp.status != 200:
+                    text = await resp.text()
+                    raise ComputerCompanionApiError(f"HTTP {resp.status}: {text[:200]}")
+                return await resp.json()
+        except ComputerCompanionAuthError:
+            raise
         except (aiohttp.ClientError, asyncio.TimeoutError) as err:
             raise ComputerCompanionApiError(str(err)) from err
 

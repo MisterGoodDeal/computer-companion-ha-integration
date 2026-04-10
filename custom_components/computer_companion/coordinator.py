@@ -35,14 +35,30 @@ class ComputerCompanionCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         self.app_options: dict[str, str] = {}
         self.selected_launch_label: str | None = None
         self.manual_launch_text_entity_id: str | None = None
+        self.cached_mac: str | None = None
 
     async def _async_update_data(self) -> dict[str, Any]:
         try:
-            return await self.api.get_status()
+            data = await self.api.get_status()
         except ComputerCompanionAuthError as err:
             raise UpdateFailed("Authentication failed") from err
         except ComputerCompanionApiError as err:
             raise UpdateFailed(str(err)) from err
+        if not self.cached_mac:
+            try:
+                await self.async_refresh_mac()
+            except ComputerCompanionApiError:
+                pass
+        return data
+
+    async def async_refresh_mac(self) -> None:
+        payload = await self.api.get_network_mac()
+        mac = payload.get("mac")
+        if isinstance(mac, str) and mac.strip():
+            self.cached_mac = mac.strip().lower()
+            self.async_update_listeners()
+        else:
+            self.async_update_listeners()
 
     async def async_refresh_apps(self) -> None:
         data = await self.api.get_apps()

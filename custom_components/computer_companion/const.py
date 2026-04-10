@@ -13,6 +13,7 @@ API_STATUS_PATH: Final = "/api/v1/status"
 API_POWER_PATH: Final = "/api/v1/power"
 API_APPS_PATH: Final = "/api/v1/apps"
 API_LAUNCH_PATH: Final = "/api/v1/apps/launch"
+API_NETWORK_MAC_PATH: Final = "/api/v1/network/mac"
 
 POWER_ACTIONS: Final[tuple[str, ...]] = (
     "shutdown",

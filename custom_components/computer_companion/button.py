@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 
+import wakeonlan
 from homeassistant.components.button import ButtonEntity, ButtonEntityDescription
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -11,7 +12,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from .api import ComputerCompanionApiError
 from .const import DOMAIN, POWER_ACTIONS
 from .coordinator import ComputerCompanionCoordinator
-from .entity import WindowsOnlyEntity
+from .entity import CompanionEntity, WindowsOnlyEntity
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -24,6 +25,11 @@ REFRESH_DESC = ButtonEntityDescription(
 LAUNCH_DESC = ButtonEntityDescription(
     key="launch_selected",
     translation_key="launch_selected",
+)
+
+WAKE_ON_LAN_DESC = ButtonEntityDescription(
+    key="wake_on_lan",
+    translation_key="wake_on_lan",
 )
 
 
@@ -54,8 +60,42 @@ async def async_setup_entry(
             RefreshAppsButton(coordinator, REFRESH_DESC),
             LaunchSelectedButton(coordinator, LAUNCH_DESC),
             *power_buttons,
+            WakeOnLanButton(coordinator, WAKE_ON_LAN_DESC),
         ]
     )
+
+
+class WakeOnLanButton(CompanionEntity, ButtonEntity):
+    def __init__(
+        self,
+        coordinator: ComputerCompanionCoordinator,
+        description: ButtonEntityDescription,
+    ) -> None:
+        super().__init__(coordinator)
+        self.entity_description = description
+        self._attr_unique_id = f"{coordinator.entry.entry_id}_{description.key}"
+
+    @property
+    def available(self) -> bool:
+        if self.coordinator.cached_mac:
+            return True
+        return super().available
+
+    async def async_press(self) -> None:
+        if not self.coordinator.cached_mac:
+            try:
+                await self.coordinator.async_refresh_mac()
+            except ComputerCompanionApiError as err:
+                _LOGGER.error("Could not fetch MAC for Wake-on-LAN: %s", err)
+                return
+        mac = self.coordinator.cached_mac
+        if not mac:
+            _LOGGER.warning("Agent reported no usable MAC for Wake-on-LAN")
+            return
+        try:
+            await self.hass.async_add_executor_job(wakeonlan.send_magic_packet, mac)
+        except OSError as err:
+            _LOGGER.error("Wake-on-LAN failed: %s", err)
 
 
 class PowerActionButton(WindowsOnlyEntity, ButtonEntity):
