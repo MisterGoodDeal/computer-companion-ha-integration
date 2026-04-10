@@ -1,0 +1,84 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Computer Companion",
+        "description": "Indique l'hôte, le port HTTP (8745 par défaut) et le jeton Bearer généré dans l'application desktop.",
+        "data": {
+          "host": "Hôte ou adresse IP",
+          "port": "Port",
+          "token": "Jeton Bearer"
+        }
+      }
+    },
+    "abort": {
+      "already_configured": "Cet appareil est déjà configuré."
+    },
+    "error": {
+      "cannot_connect": "Impossible de joindre l'API (santé du service ou réseau).",
+      "invalid_auth": "Jeton refusé (401). Vérifie le jeton Bearer dans l'application."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "agent_platform": {
+        "name": "Plate-forme"
+      }
+    },
+    "binary_sensor": {
+      "windows": {
+        "name": "Windows"
+      },
+      "agent_presence": {
+        "name": "Présence"
+      }
+    },
+    "select": {
+      "app_launch": {
+        "name": "Application à lancer"
+      }
+    },
+    "button": {
+      "refresh_apps": {
+        "name": "Actualiser la liste des applications"
+      },
+      "launch_selected": {
+        "name": "Lancer l'application sélectionnée"
+      }
+    }
+  },
+  "services": {
+    "power": {
+      "name": "Action d'alimentation",
+      "description": "Envoie une commande d'alimentation au PC (Windows).",
+      "fields": {
+        "config_entry": {
+          "name": "Entrée de configuration",
+          "description": "Intégration Computer Companion à utiliser."
+        },
+        "action": {
+          "name": "Action",
+          "description": "arrêt, redémarrage, veille, veille prolongée ou annulation (shutdown, restart, sleep, hibernate, abort)."
+        }
+      }
+    },
+    "launch": {
+      "name": "Lancer un exécutable",
+      "description": "Lance un fichier .exe via son chemin absolu (Windows).",
+      "fields": {
+        "config_entry": {
+          "name": "Entrée de configuration",
+          "description": "Intégration Computer Companion à utiliser."
+        },
+        "path": {
+          "name": "Chemin",
+          "description": "Chemin absolu vers l'exécutable."
+        },
+        "args": {
+          "name": "Arguments",
+          "description": "Arguments de ligne de commande (liste de chaînes)."
+        }
+      }
+    }
+  }
+}

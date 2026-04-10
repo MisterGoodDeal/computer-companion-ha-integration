@@ -1,0 +1,84 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Computer Companion",
+        "description": "Enter the host, HTTP port (default 8745), and the Bearer token from the desktop app.",
+        "data": {
+          "host": "Host or IP address",
+          "port": "Port",
+          "token": "Bearer token"
+        }
+      }
+    },
+    "abort": {
+      "already_configured": "This device is already configured."
+    },
+    "error": {
+      "cannot_connect": "Could not reach the API (health check or network).",
+      "invalid_auth": "Token rejected (401). Check the Bearer token in the desktop app."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "agent_platform": {
+        "name": "Platform"
+      }
+    },
+    "binary_sensor": {
+      "windows": {
+        "name": "Windows"
+      },
+      "agent_presence": {
+        "name": "Presence"
+      }
+    },
+    "select": {
+      "app_launch": {
+        "name": "Application to launch"
+      }
+    },
+    "button": {
+      "refresh_apps": {
+        "name": "Refresh application list"
+      },
+      "launch_selected": {
+        "name": "Launch selected application"
+      }
+    }
+  },
+  "services": {
+    "power": {
+      "name": "Power action",
+      "description": "Sends a power command to the PC (Windows).",
+      "fields": {
+        "config_entry": {
+          "name": "Config entry",
+          "description": "Which Computer Companion integration to use."
+        },
+        "action": {
+          "name": "Action",
+          "description": "shutdown, restart, sleep, hibernate, or abort."
+        }
+      }
+    },
+    "launch": {
+      "name": "Launch executable",
+      "description": "Launches an .exe by absolute path (Windows).",
+      "fields": {
+        "config_entry": {
+          "name": "Config entry",
+          "description": "Which Computer Companion integration to use."
+        },
+        "path": {
+          "name": "Path",
+          "description": "Absolute path to the executable."
+        },
+        "args": {
+          "name": "Arguments",
+          "description": "Command-line arguments (list of strings)."
+        }
+      }
+    }
+  }
+}
