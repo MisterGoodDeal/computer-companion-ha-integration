@@ -38,6 +38,11 @@
         "name": "Application à lancer"
       }
     },
+    "text": {
+      "manual_launch_path": {
+        "name": "Chemin d'exécutable personnalisé"
+      }
+    },
     "button": {
       "refresh_apps": {
         "name": "Actualiser la liste des applications"

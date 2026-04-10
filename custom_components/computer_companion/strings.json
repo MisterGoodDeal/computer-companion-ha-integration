@@ -38,6 +38,11 @@
         "name": "Application to launch"
       }
     },
+    "text": {
+      "manual_launch_path": {
+        "name": "Custom executable path"
+      }
+    },
     "button": {
       "refresh_apps": {
         "name": "Refresh application list"
