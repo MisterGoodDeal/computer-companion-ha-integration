@@ -9,7 +9,7 @@ from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .api import ComputerCompanionApiError
-from .const import DOMAIN
+from .const import DOMAIN, POWER_ACTIONS
 from .coordinator import ComputerCompanionCoordinator
 from .entity import WindowsOnlyEntity
 
@@ -27,6 +27,16 @@ LAUNCH_DESC = ButtonEntityDescription(
 )
 
 
+def _power_button_descriptions() -> tuple[ButtonEntityDescription, ...]:
+    return tuple(
+        ButtonEntityDescription(
+            key=f"power_{action}",
+            translation_key=f"power_{action}",
+        )
+        for action in POWER_ACTIONS
+    )
+
+
 async def async_setup_entry(
     hass: HomeAssistant,
     entry: ConfigEntry,
@@ -35,12 +45,38 @@ async def async_setup_entry(
     coordinator: ComputerCompanionCoordinator = hass.data[DOMAIN][entry.entry_id][
         "coordinator"
     ]
+    power_buttons = [
+        PowerActionButton(coordinator, desc, action)
+        for action, desc in zip(POWER_ACTIONS, _power_button_descriptions())
+    ]
     async_add_entities(
         [
             RefreshAppsButton(coordinator, REFRESH_DESC),
             LaunchSelectedButton(coordinator, LAUNCH_DESC),
+            *power_buttons,
         ]
     )
+
+
+class PowerActionButton(WindowsOnlyEntity, ButtonEntity):
+    def __init__(
+        self,
+        coordinator: ComputerCompanionCoordinator,
+        description: ButtonEntityDescription,
+        power_action: str,
+    ) -> None:
+        super().__init__(coordinator)
+        self.entity_description = description
+        self._attr_unique_id = f"{coordinator.entry.entry_id}_{description.key}"
+        self._power_action = power_action
+
+    async def async_press(self) -> None:
+        try:
+            await self.coordinator.api.post_power(self._power_action)
+        except ComputerCompanionApiError as err:
+            _LOGGER.error(
+                "Power action %s failed: %s", self._power_action, err
+            )
 
 
 class RefreshAppsButton(WindowsOnlyEntity, ButtonEntity):
