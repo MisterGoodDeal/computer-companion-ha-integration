@@ -71,9 +71,23 @@ class LaunchSelectedButton(WindowsOnlyEntity, ButtonEntity):
         self._attr_unique_id = f"{coordinator.entry.entry_id}_{description.key}"
 
     async def async_press(self) -> None:
+        eid = self.coordinator.manual_launch_text_entity_id
+        if eid:
+            state = self.hass.states.get(eid)
+            if state and state.state not in ("unknown", "unavailable", ""):
+                custom = state.state.strip()
+                if custom:
+                    try:
+                        await self.coordinator.api.post_launch(custom)
+                    except ComputerCompanionApiError as err:
+                        _LOGGER.error("Launch failed: %s", err)
+                    return
+
         label = self.coordinator.selected_launch_label
         if not label:
-            _LOGGER.warning("No application selected in the list")
+            _LOGGER.warning(
+                "No custom path set and no application selected in the list"
+            )
             return
         path = self.coordinator.app_options.get(label)
         if not path:

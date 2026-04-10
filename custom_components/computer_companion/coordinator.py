@@ -34,6 +34,7 @@ class ComputerCompanionCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         self.entry = entry
         self.app_options: dict[str, str] = {}
         self.selected_launch_label: str | None = None
+        self.manual_launch_text_entity_id: str | None = None
 
     async def _async_update_data(self) -> dict[str, Any]:
         try:

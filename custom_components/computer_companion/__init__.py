@@ -15,8 +15,9 @@ from .coordinator import ComputerCompanionCoordinator
 PLATFORMS: list[Platform] = [
     Platform.SENSOR,
     Platform.BINARY_SENSOR,
-    Platform.BUTTON,
     Platform.SELECT,
+    Platform.TEXT,
+    Platform.BUTTON,
 ]
 
 SERVICE_POWER = "power"
