@@ -101,11 +101,3 @@ Versions follow the `version` field in `manifest.json`. With HACS, publish **rel
 | Desktop agent (Windows) | [MisterGoodDeal/computer-companion-desktop-agent](https://github.com/MisterGoodDeal/computer-companion-desktop-agent) |
 | HACS | [hacs.xyz](https://hacs.xyz/) |
 | Home Assistant | [home-assistant.io](https://www.home-assistant.io/) |
-
----
-
-<div align="center">
-
-*Not affiliated with Home Assistant or the desktop agent authors — use at your own risk on your network.*
-
-</div>
