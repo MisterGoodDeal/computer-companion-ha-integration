@@ -49,6 +49,21 @@
       },
       "launch_selected": {
         "name": "Launch selected application"
+      },
+      "power_shutdown": {
+        "name": "Shut down"
+      },
+      "power_restart": {
+        "name": "Restart"
+      },
+      "power_sleep": {
+        "name": "Sleep"
+      },
+      "power_hibernate": {
+        "name": "Hibernate"
+      },
+      "power_abort": {
+        "name": "Abort shutdown"
       }
     }
   },

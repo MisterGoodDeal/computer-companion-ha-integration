@@ -49,6 +49,21 @@
       },
       "launch_selected": {
         "name": "Lancer l'application sélectionnée"
+      },
+      "power_shutdown": {
+        "name": "Arrêter"
+      },
+      "power_restart": {
+        "name": "Redémarrer"
+      },
+      "power_sleep": {
+        "name": "Mettre en veille"
+      },
+      "power_hibernate": {
+        "name": "Veille prolongée"
+      },
+      "power_abort": {
+        "name": "Annuler l'arrêt"
       }
     }
   },
