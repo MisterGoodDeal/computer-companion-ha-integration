@@ -74,6 +74,7 @@ Au premier ajout, l’intégration vérifie `GET /health` puis `GET /api/v1/stat
 
 - **Capteurs** : plate-forme (`win32`, etc.), binaire **Windows**, **Présence** (joignabilité de l’API via le polling `/api/v1/status`).
 - **Select + texte + boutons** : actualiser la liste du menu Démarrer, choisir une app dans la liste **ou** saisir un chemin complet vers un `.exe` dans **Chemin d'exécutable personnalisé**, puis appuyer sur **Lancer l'application sélectionnée** (Windows uniquement).
+- **Boutons d’alimentation** (Windows) : arrêt, redémarrer, veille, veille prolongée, annuler un arrêt en cours — mêmes actions que le service `computer_companion.power`.
 - **Services** : `computer_companion.power` (shutdown, restart, sleep, hibernate, abort) et `computer_companion.launch` (chemin + arguments optionnels).
 
 Les actions sensibles (arrêt, lancement d’exe) exigent un **réseau de confiance** et un **jeton bien protégé**.
