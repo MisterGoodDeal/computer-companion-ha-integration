@@ -1,5 +1,7 @@
 # Computer Companion · Home Assistant
 
+**Language:** English · [Français →](README_FR.md)
+
 <div align="center">
 
 **Control your Windows PC from Home Assistant** — power, Start Menu app list, launching executables — over a local HTTP API secured with a Bearer token.
