@@ -75,6 +75,7 @@ On first setup, the integration checks `GET /health` then `GET /api/v1/status` w
 - **Sensors**: platform (`win32`, etc.), **Windows** binary, **Presence** (API reachability based on `/api/v1/status` polling).
 - **Select + text + buttons**: refresh the Start Menu app list, pick an app from the list **or** type a full `.exe` path in **Custom executable path**, then press **Launch selected application** (Windows only).
 - **Power buttons** (Windows): shut down, restart, sleep, hibernate, abort pending shutdown — same actions as the `computer_companion.power` service.
+- **Wake on LAN**: button that sends a magic packet using the MAC from `GET /api/v1/network/mac` (cached while the agent is reachable so you can wake the PC when it is off).
 - **Services**: `computer_companion.power` (shutdown, restart, sleep, hibernate, abort) and `computer_companion.launch` (path + optional arguments).
 
 Sensitive actions (shutdown, launching executables) require a **trusted network** and a **well-protected token**.
