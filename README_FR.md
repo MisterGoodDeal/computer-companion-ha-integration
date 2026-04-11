@@ -79,7 +79,7 @@ L'intégration interroge `/api/v1/status` toutes les **10 secondes** pour garder
 - **Select + texte + boutons** : actualiser la liste du menu Démarrer, choisir une app dans la liste **ou** saisir un chemin complet vers un `.exe` dans **Chemin d'exécutable personnalisé**, puis appuyer sur **Lancer l'application sélectionnée** (Windows uniquement).
 - **Boutons d'alimentation** (Windows) : arrêt, redémarrer, veille, veille prolongée, annuler un arrêt en cours — mêmes actions que le service `computer_companion.power`.
 - **Wake on LAN** : bouton qui envoie un paquet magique avec l'adresse MAC renvoyée par `GET /api/v1/network/mac` (mise en cache tant que l'agent répond, pour réveiller le PC quand il est éteint).
-- **Lecteur multimédia** (Windows) : télécommande virtuelle — lecture/pause (bascule), piste suivante/précédente, arrêt, volume ±, muet — via `POST /api/v1/media/action`. L'état reste **inactif** (pas de retour lecture côté agent).
+- **Lecteur multimédia** (Windows) : télécommande virtuelle — lecture/pause (bascule), piste suivante/précédente, arrêt, volume ±, muet — via `POST /api/v1/media/action`. L’état est affiché en **lecture** avec `assumed_state` pour que les tableaux de bord HA affichent tous les contrôles (aucun vrai statut lecture côté agent).
 - **Services** : `computer_companion.power` (shutdown, restart, sleep, hibernate, abort) et `computer_companion.launch` (chemin + arguments optionnels).
 
 Les actions sensibles (arrêt, lancement d'exe) exigent un **réseau de confiance** et un **jeton bien protégé**.

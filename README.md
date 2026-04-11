@@ -79,7 +79,7 @@ The integration polls `/api/v1/status` every **10 seconds** so presence-related 
 - **Select + text + buttons**: refresh the Start Menu app list, pick an app from the list **or** type a full `.exe` path in **Custom executable path**, then press **Launch selected application** (Windows only).
 - **Power buttons** (Windows): shut down, restart, sleep, hibernate, abort pending shutdown — same actions as the `computer_companion.power` service.
 - **Wake on LAN**: button that sends a magic packet using the MAC from `GET /api/v1/network/mac` (cached while the agent is reachable so you can wake the PC when it is off).
-- **Media player** (Windows): virtual remote — play/pause (toggle), next/previous track, stop, volume up/down, mute — via `POST /api/v1/media/action`. State stays **idle** (no playback feedback from the agent).
+- **Media player** (Windows): virtual remote — play/pause (toggle), next/previous track, stop, volume up/down, mute — via `POST /api/v1/media/action`. State is reported as **playing** with `assumed_state` so HA dashboards show full transport controls (there is no real playback status from the agent).
 - **Services**: `computer_companion.power` (shutdown, restart, sleep, hibernate, abort) and `computer_companion.launch` (path + optional arguments).
 
 Sensitive actions (shutdown, launching executables) require a **trusted network** and a **well-protected token**.
