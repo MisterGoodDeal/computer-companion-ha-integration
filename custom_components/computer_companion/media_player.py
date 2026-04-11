@@ -33,6 +33,7 @@ async def async_setup_entry(
 
 
 class WindowsMediaPlayer(WindowsOnlyEntity, MediaPlayerEntity):
+    _attr_assumed_state = True
     _attr_has_entity_name = True
     _attr_translation_key = MEDIA_DESC_KEY
     _attr_supported_features = (
@@ -57,7 +58,7 @@ class WindowsMediaPlayer(WindowsOnlyEntity, MediaPlayerEntity):
 
     @property
     def state(self) -> MediaPlayerState:
-        return MediaPlayerState.IDLE
+        return MediaPlayerState.PLAYING
 
     async def async_media_play(self) -> None:
         await self._send_action("play_pause")
