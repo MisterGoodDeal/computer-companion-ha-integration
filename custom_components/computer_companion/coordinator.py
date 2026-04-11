@@ -4,6 +4,8 @@ from datetime import timedelta
 import logging
 from typing import Any
 
+import wakeonlan
+
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
@@ -13,7 +15,7 @@ from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
-UPDATE_INTERVAL = timedelta(seconds=60)
+UPDATE_INTERVAL = timedelta(seconds=10)
 
 
 class ComputerCompanionCoordinator(DataUpdateCoordinator[dict[str, Any]]):
@@ -59,6 +61,24 @@ class ComputerCompanionCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             self.async_update_listeners()
         else:
             self.async_update_listeners()
+
+    async def async_send_wake_on_lan(self) -> bool:
+        if not self.cached_mac:
+            try:
+                await self.async_refresh_mac()
+            except ComputerCompanionApiError as err:
+                _LOGGER.error("Could not fetch MAC for Wake-on-LAN: %s", err)
+                return False
+        mac = self.cached_mac
+        if not mac:
+            _LOGGER.warning("Agent reported no usable MAC for Wake-on-LAN")
+            return False
+        try:
+            await self.hass.async_add_executor_job(wakeonlan.send_magic_packet, mac)
+        except OSError as err:
+            _LOGGER.error("Wake-on-LAN failed: %s", err)
+            return False
+        return True
 
     async def async_refresh_apps(self) -> None:
         data = await self.api.get_apps()

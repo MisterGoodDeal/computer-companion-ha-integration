@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import logging
 
-import wakeonlan
 from homeassistant.components.button import ButtonEntity, ButtonEntityDescription
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -82,20 +81,7 @@ class WakeOnLanButton(CompanionEntity, ButtonEntity):
         return super().available
 
     async def async_press(self) -> None:
-        if not self.coordinator.cached_mac:
-            try:
-                await self.coordinator.async_refresh_mac()
-            except ComputerCompanionApiError as err:
-                _LOGGER.error("Could not fetch MAC for Wake-on-LAN: %s", err)
-                return
-        mac = self.coordinator.cached_mac
-        if not mac:
-            _LOGGER.warning("Agent reported no usable MAC for Wake-on-LAN")
-            return
-        try:
-            await self.hass.async_add_executor_job(wakeonlan.send_magic_packet, mac)
-        except OSError as err:
-            _LOGGER.error("Wake-on-LAN failed: %s", err)
+        await self.coordinator.async_send_wake_on_lan()
 
 
 class PowerActionButton(WindowsOnlyEntity, ButtonEntity):
