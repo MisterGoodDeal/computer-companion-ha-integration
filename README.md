@@ -72,7 +72,10 @@ On first setup, the integration checks `GET /health` then `GET /api/v1/status` w
 
 ## Features
 
-- **Sensors**: platform (`win32`, etc.), **Windows** binary, **Presence** (API reachability based on `/api/v1/status` polling).
+The integration polls `/api/v1/status` every **10 seconds** so presence-related state stays reasonably up to date.
+
+- **Switch “Computer”**: always available. **On** when the desktop agent answers `/api/v1/status` (PC reachable); **Off** when it does not. **Turn on** sends a Wake-on-LAN magic packet (MAC from `GET /api/v1/network/mac`, cached when possible). **Turn off** requests **shutdown** via `POST /api/v1/power` (Windows agent behavior). No YAML `switch:` block required.
+- **Sensors**: platform (`win32`, etc.), **Windows** binary, **Presence** (same reachability signal as the switch, via `/api/v1/status`).
 - **Select + text + buttons**: refresh the Start Menu app list, pick an app from the list **or** type a full `.exe` path in **Custom executable path**, then press **Launch selected application** (Windows only).
 - **Power buttons** (Windows): shut down, restart, sleep, hibernate, abort pending shutdown — same actions as the `computer_companion.power` service.
 - **Wake on LAN**: button that sends a magic packet using the MAC from `GET /api/v1/network/mac` (cached while the agent is reachable so you can wake the PC when it is off).
