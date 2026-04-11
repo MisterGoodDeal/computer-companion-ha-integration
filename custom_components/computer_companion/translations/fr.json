@@ -30,6 +30,11 @@
         "name": "Ordinateur"
       }
     },
+    "media_player": {
+      "windows_media": {
+        "name": "Média Windows"
+      }
+    },
     "binary_sensor": {
       "windows": {
         "name": "Windows"
