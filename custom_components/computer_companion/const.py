@@ -14,6 +14,7 @@ API_POWER_PATH: Final = "/api/v1/power"
 API_APPS_PATH: Final = "/api/v1/apps"
 API_LAUNCH_PATH: Final = "/api/v1/apps/launch"
 API_NETWORK_MAC_PATH: Final = "/api/v1/network/mac"
+API_MEDIA_ACTION_PATH: Final = "/api/v1/media/action"
 
 POWER_ACTIONS: Final[tuple[str, ...]] = (
     "shutdown",
@@ -21,4 +22,14 @@ POWER_ACTIONS: Final[tuple[str, ...]] = (
     "sleep",
     "hibernate",
     "abort",
+)
+
+MEDIA_ACTIONS: Final[tuple[str, ...]] = (
+    "play_pause",
+    "next",
+    "previous",
+    "stop",
+    "volume_up",
+    "volume_down",
+    "mute",
 )

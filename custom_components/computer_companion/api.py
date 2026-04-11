@@ -10,9 +10,11 @@ from .const import (
     API_APPS_PATH,
     API_HEALTH_PATH,
     API_LAUNCH_PATH,
+    API_MEDIA_ACTION_PATH,
     API_NETWORK_MAC_PATH,
     API_POWER_PATH,
     API_STATUS_PATH,
+    MEDIA_ACTIONS,
 )
 
 TIMEOUT_DEFAULT = aiohttp.ClientTimeout(total=30, connect=10)
@@ -121,6 +123,29 @@ class ComputerCompanionApi:
                     text = await resp.text()
                     raise ComputerCompanionApiError(f"HTTP {resp.status}: {text[:200]}")
                 return await resp.json()
+        except ComputerCompanionAuthError:
+            raise
+        except (aiohttp.ClientError, asyncio.TimeoutError) as err:
+            raise ComputerCompanionApiError(str(err)) from err
+
+    async def post_media_action(self, action: str) -> dict[str, Any]:
+        if action not in MEDIA_ACTIONS:
+            raise ComputerCompanionApiError(f"invalid_action:{action}")
+        url = self._base.join(URL(API_MEDIA_ACTION_PATH))
+        try:
+            async with self._session.post(
+                url,
+                headers={**self._auth, "Content-Type": "application/json"},
+                json={"action": action},
+                timeout=TIMEOUT_DEFAULT,
+            ) as resp:
+                if resp.status == 401:
+                    raise ComputerCompanionAuthError()
+                data = await resp.json()
+                if resp.status != 200:
+                    err = data.get("error", resp.status)
+                    raise ComputerCompanionApiError(str(err))
+                return data
         except ComputerCompanionAuthError:
             raise
         except (aiohttp.ClientError, asyncio.TimeoutError) as err:
