@@ -25,6 +25,11 @@
         "name": "Platform"
       }
     },
+    "switch": {
+      "host_pc": {
+        "name": "Computer"
+      }
+    },
     "binary_sensor": {
       "windows": {
         "name": "Windows"
