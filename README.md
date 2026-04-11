@@ -43,7 +43,7 @@ Without the agent installed and configured on the target machine, the integratio
 
 1. Install **[HACS](https://hacs.xyz/docs/setup/download)** if you have not already.
 2. In HACS: **⋮** → **Custom repositories**.
-3. Add **this repository’s Git URL**, category **Integration**.
+3. Add **this repository's Git URL**, category **Integration**.
 4. Search for **Computer Companion** under HACS integrations, then **Download**.
 5. **Restart** Home Assistant.
 6. **Settings** → **Devices & services** → **Add integration** → **Computer Companion**.

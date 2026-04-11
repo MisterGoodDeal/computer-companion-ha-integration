@@ -4,7 +4,7 @@
 
 <div align="center">
 
-**Contrôle ton PC Windows depuis Home Assistant** — alimentation, liste du menu Démarrer, lancement d’exécutables — via une API HTTP locale sécurisée par jeton Bearer.
+**Contrôle ton PC Windows depuis Home Assistant** — alimentation, liste du menu Démarrer, lancement d'exécutables — via une API HTTP locale sécurisée par jeton Bearer.
 
 [![HACS Custom](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://hacs.xyz/)
 [![Home Assistant](https://img.shields.io/badge/Home%20Assistant-2024.1+-41BDF5.svg)](https://www.home-assistant.io/)
@@ -15,14 +15,14 @@
 
 ## Architecture
 
-Cette intégration dialogue avec l’agent **Computer Companion** : une application desktop (Electron + Express) qui expose une API REST sur le réseau local.
+Cette intégration dialogue avec l'agent **Computer Companion** : une application desktop (Electron + Express) qui expose une API REST sur le réseau local.
 
 | Composant | Rôle |
 |-----------|------|
-| **[computer-companion-desktop-agent](https://github.com/MisterGoodDeal/computer-companion-desktop-agent)** | À installer sur le PC Windows à piloter. Génère le jeton Bearer et sert l’API (`/health`, `/api/v1/…`). |
-| **Cette intégration** | S’installe dans Home Assistant et se connecte à l’agent (IP ou nom d’hôte + port + jeton). |
+| **[computer-companion-desktop-agent](https://github.com/MisterGoodDeal/computer-companion-desktop-agent)** | À installer sur le PC Windows à piloter. Génère le jeton Bearer et sert l'API (`/health`, `/api/v1/…`). |
+| **Cette intégration** | S'installe dans Home Assistant et se connecte à l'agent (IP ou nom d'hôte + port + jeton). |
 
-Sans l’agent installé et configuré sur la machine cible, l’intégration ne peut rien contrôler.
+Sans l'agent installé et configuré sur la machine cible, l'intégration ne peut rien contrôler.
 
 ---
 
@@ -31,9 +31,9 @@ Sans l’agent installé et configuré sur la machine cible, l’intégration ne
 1. **Home Assistant** (version minimale indiquée dans [`hacs.json`](hacs.json)).
 2. **Computer Companion (desktop)** sur le PC Windows — dépôt officiel :  
    **[github.com/MisterGoodDeal/computer-companion-desktop-agent](https://github.com/MisterGoodDeal/computer-companion-desktop-agent)**  
-   - Lance l’agent, configure l’écoute réseau (souvent `0.0.0.0` si Home Assistant est sur un autre appareil) et le **port** (défaut **8745**).
-   - **Génère un jeton Bearer** dans l’application et conserve-le pour l’étape de configuration HA.
-3. **Réseau** : le serveur Home Assistant doit joindre le PC (IP fixe, nom d’hôte ou mDNS). Ouvre le pare-feu Windows sur le port choisi si besoin.
+   - Lance l'agent, configure l'écoute réseau (souvent `0.0.0.0` si Home Assistant est sur un autre appareil) et le **port** (défaut **8745**).
+   - **Génère un jeton Bearer** dans l'application et conserve-le pour l'étape de configuration HA.
+3. **Réseau** : le serveur Home Assistant doit joindre le PC (IP fixe, nom d'hôte ou mDNS). Ouvre le pare-feu Windows sur le port choisi si besoin.
 
 ---
 
@@ -41,9 +41,9 @@ Sans l’agent installé et configuré sur la machine cible, l’intégration ne
 
 ### Option A — via HACS (recommandé)
 
-1. Installe **[HACS](https://hacs.xyz/docs/setup/download)** si ce n’est pas déjà fait.
+1. Installe **[HACS](https://hacs.xyz/docs/setup/download)** si ce n'est pas déjà fait.
 2. Dans HACS : **⋮** → **Dépôts personnalisés**.
-3. Ajoute **l’URL Git de ce dépôt**, catégorie **Intégration**.
+3. Ajoute **l'URL Git de ce dépôt**, catégorie **Intégration**.
 4. Recherche **Computer Companion** dans les intégrations HACS, puis **Télécharger**.
 5. **Redémarre** Home Assistant.
 6. **Paramètres** → **Appareils et services** → **Ajouter une intégration** → **Computer Companion**.
@@ -52,57 +52,57 @@ Sans l’agent installé et configuré sur la machine cible, l’intégration ne
 
 1. Copie le dossier `custom_components/computer_companion/` à la racine de ta config HA (à côté de `configuration.yaml`).
 2. Redémarre Home Assistant.
-3. Ajoute l’intégration comme ci-dessus.
+3. Ajoute l'intégration comme ci-dessus.
 
 ---
 
 ## Configuration
 
-L’assistant te demande :
+L'assistant te demande :
 
 | Champ | Description |
 |--------|-------------|
-| **Hôte** | IP ou nom d’hôte du PC où tourne l’agent (ex. `192.168.1.42` ou `mon-pc.local`). |
-| **Port** | Port HTTP de l’agent (souvent **8745**). |
-| **Jeton Bearer** | Jeton généré dans l’application desktop (champ masqué). |
+| **Hôte** | IP ou nom d'hôte du PC où tourne l'agent (ex. `192.168.1.42` ou `mon-pc.local`). |
+| **Port** | Port HTTP de l'agent (souvent **8745**). |
+| **Jeton Bearer** | Jeton généré dans l'application desktop (champ masqué). |
 
-Au premier ajout, l’intégration vérifie `GET /health` puis `GET /api/v1/status` avec authentification.
+Au premier ajout, l'intégration vérifie `GET /health` puis `GET /api/v1/status` avec authentification.
 
 ---
 
 ## Fonctionnalités
 
-L’intégration interroge `/api/v1/status` toutes les **10 secondes** pour garder un état de présence à jour.
+L'intégration interroge `/api/v1/status` toutes les **10 secondes** pour garder un état de présence à jour.
 
-- **Interrupteur « Ordinateur »** : toujours disponible. **Allumé** quand l’agent répond à `/api/v1/status` (PC joignable) ; **éteint** sinon. **Allumer** envoie un paquet Wake-on-LAN (MAC issue de `GET /api/v1/network/mac`, mise en cache si possible). **Éteindre** demande un **arrêt** via `POST /api/v1/power` (comportement côté agent Windows). Aucun bloc YAML `switch:` à écrire.
-- **Capteurs** : plate-forme (`win32`, etc.), binaire **Windows**, **Présence** (même signal de joignabilité que l’interrupteur, via `/api/v1/status`).
+- **Interrupteur « Ordinateur »** : toujours disponible. **Allumé** quand l'agent répond à `/api/v1/status` (PC joignable) ; **éteint** sinon. **Allumer** envoie un paquet Wake-on-LAN (MAC issue de `GET /api/v1/network/mac`, mise en cache si possible). **Éteindre** demande un **arrêt** via `POST /api/v1/power` (comportement côté agent Windows). Aucun bloc YAML `switch:` à écrire.
+- **Capteurs** : plate-forme (`win32`, etc.), binaire **Windows**, **Présence** (même signal de joignabilité que l'interrupteur, via `/api/v1/status`).
 - **Select + texte + boutons** : actualiser la liste du menu Démarrer, choisir une app dans la liste **ou** saisir un chemin complet vers un `.exe` dans **Chemin d'exécutable personnalisé**, puis appuyer sur **Lancer l'application sélectionnée** (Windows uniquement).
-- **Boutons d’alimentation** (Windows) : arrêt, redémarrer, veille, veille prolongée, annuler un arrêt en cours — mêmes actions que le service `computer_companion.power`.
-- **Wake on LAN** : bouton qui envoie un paquet magique avec l’adresse MAC renvoyée par `GET /api/v1/network/mac` (mise en cache tant que l’agent répond, pour réveiller le PC quand il est éteint).
-- **Lecteur multimédia** (Windows) : télécommande virtuelle — lecture/pause (bascule), piste suivante/précédente, arrêt, volume ±, muet — via `POST /api/v1/media/action`. L’état reste **inactif** (pas de retour lecture côté agent).
+- **Boutons d'alimentation** (Windows) : arrêt, redémarrer, veille, veille prolongée, annuler un arrêt en cours — mêmes actions que le service `computer_companion.power`.
+- **Wake on LAN** : bouton qui envoie un paquet magique avec l'adresse MAC renvoyée par `GET /api/v1/network/mac` (mise en cache tant que l'agent répond, pour réveiller le PC quand il est éteint).
+- **Lecteur multimédia** (Windows) : télécommande virtuelle — lecture/pause (bascule), piste suivante/précédente, arrêt, volume ±, muet — via `POST /api/v1/media/action`. L'état reste **inactif** (pas de retour lecture côté agent).
 - **Services** : `computer_companion.power` (shutdown, restart, sleep, hibernate, abort) et `computer_companion.launch` (chemin + arguments optionnels).
 
-Les actions sensibles (arrêt, lancement d’exe) exigent un **réseau de confiance** et un **jeton bien protégé**.
+Les actions sensibles (arrêt, lancement d'exe) exigent un **réseau de confiance** et un **jeton bien protégé**.
 
-### Pourquoi un champ texte plutôt qu’un select « libre » ?
+### Pourquoi un champ texte plutôt qu'un select « libre » ?
 
-Les entités **`select`** de Home Assistant ne permettent que de choisir parmi une **liste fixe** d’options : pas de saisie libre. Pour lancer un chemin absent du scan **depuis l’interface avec le même bouton de lancement**, utilise l’entité **`text`** **Chemin d'exécutable personnalisé** : si elle n’est pas vide, **Lancer l'application sélectionnée** utilise ce chemin en priorité ; sinon elle utilise l’option choisie dans **Application à lancer**.
+Les entités **`select`** de Home Assistant ne permettent que de choisir parmi une **liste fixe** d'options : pas de saisie libre. Pour lancer un chemin absent du scan **depuis l'interface avec le même bouton de lancement**, utilise l'entité **`text`** **Chemin d'exécutable personnalisé** : si elle n'est pas vide, **Lancer l'application sélectionnée** utilise ce chemin en priorité ; sinon elle utilise l'option choisie dans **Application à lancer**.
 
-### Applications « custom » (n’importe quel exécutable)
+### Applications « custom » (n'importe quel exécutable)
 
-Une app n’a **pas** besoin d’apparaître dans la liste scannée. L’agent desktop accepte **n’importe quel chemin absolu** vers un `.exe` existant (voir l’API : `POST /api/v1/apps/launch`).
+Une app n'a **pas** besoin d'apparaître dans la liste scannée. L'agent desktop accepte **n'importe quel chemin absolu** vers un `.exe` existant (voir l'API : `POST /api/v1/apps/launch`).
 
-**Depuis l’UI :** renseigne **Chemin d'exécutable personnalisé** (ex. `D:\Apps\Tool\tool.exe`) puis **Lancer l'application sélectionnée**. Vide le champ texte pour que le bouton se base uniquement sur le **select** **Application à lancer**.
+**Depuis l'UI :** renseigne **Chemin d'exécutable personnalisé** (ex. `D:\Apps\Tool\tool.exe`) puis **Lancer l'application sélectionnée**. Vide le champ texte pour que le bouton se base uniquement sur le **select** **Application à lancer**.
 
 **Depuis YAML / automations**, tu peux soit remplir cette entité texte puis appuyer sur le bouton, soit appeler le service **`computer_companion.launch`** :
 
 | Champ | Description |
 |-------|-------------|
-| `config_entry` | Identifiant de l’entrée de config Computer Companion (comme dans **Outils de développement → Actions** quand tu choisis l’intégration dans l’UI). |
-| `path` | Chemin complet vers l’exécutable, ex. `C:\Games\SomeGame\game.exe`. |
-| `args` | Liste optionnelle d’arguments en ligne de commande (chaînes). |
+| `config_entry` | Identifiant de l'entrée de config Computer Companion (comme dans **Outils de développement → Actions** quand tu choisis l'intégration dans l'UI). |
+| `path` | Chemin complet vers l'exécutable, ex. `C:\Games\SomeGame\game.exe`. |
+| `args` | Liste optionnelle d'arguments en ligne de commande (chaînes). |
 
-Exemple (adapte `config_entry` — copie depuis **Paramètres → Appareils et services → Computer Companion** → menu trois points sur l’intégration, ou remplis une fois via l’UI **Actions**) :
+Exemple (adapte `config_entry` — copie depuis **Paramètres → Appareils et services → Computer Companion** → menu trois points sur l'intégration, ou remplis une fois via l'UI **Actions**) :
 
 ```yaml
 action: computer_companion.launch
@@ -116,7 +116,7 @@ data:
 
 Utilise le **select** **Application à lancer** (la valeur **option** doit correspondre à un libellé de la liste, ex. `Steam`) puis **Lancer l'application sélectionnée**.
 
-Copie les vrais `entity_id` depuis **Outils de développement → États** ou depuis la page de l’appareil — ils dépendent du nom d’hôte et de la langue de l’UI (suffixes du type `application_to_launch` en anglais vs `application_a_lancer` en français, etc.).
+Copie les vrais `entity_id` depuis **Outils de développement → États** ou depuis la page de l'appareil — ils dépendent du nom d'hôte et de la langue de l'UI (suffixes du type `application_to_launch` en anglais vs `application_a_lancer` en français, etc.).
 
 ```yaml
 alias: Lancer Steam
@@ -134,11 +134,11 @@ sequence:
     data: {}
 ```
 
-En interface anglaise, les mêmes entités peuvent ressembler à `select.192_168_1_33_application_to_launch` et `button.192_168_1_33_launch_selected_application`. Utilise la **chaîne exacte** affichée pour l’option du select (y compris désambiguïsation du type `Steam (1)` si besoin).
+En interface anglaise, les mêmes entités peuvent ressembler à `select.192_168_1_33_application_to_launch` et `button.192_168_1_33_launch_selected_application`. Utilise la **chaîne exacte** affichée pour l'option du select (y compris désambiguïsation du type `Steam (1)` si besoin).
 
 ### Exemple de script : chemin perso + même bouton de lancement
 
-Mets le chemin complet dans l’entité texte **Chemin d'exécutable personnalisé**, puis **Lancer l'application sélectionnée** (les `entity_id` dépendent de l’hôte / de la langue) :
+Mets le chemin complet dans l'entité texte **Chemin d'exécutable personnalisé**, puis **Lancer l'application sélectionnée** (les `entity_id` dépendent de l'hôte / de la langue) :
 
 ```yaml
 alias: Lancer un exe perso
@@ -161,7 +161,7 @@ Utilise ton vrai `text.*` depuis les **Outils de développement** (le suffixe pe
 
 ## Mises à jour
 
-Les versions suivent le champ `version` dans `manifest.json`. Avec HACS, publie des **releases / tags** sur GitHub (ex. `v0.3.0`) pour que les utilisateurs voient les mises à jour. Un script d’aide est fourni : [`scripts/release.sh`](scripts/release.sh).
+Les versions suivent le champ `version` dans `manifest.json`. Avec HACS, publie des **releases / tags** sur GitHub (ex. `v0.3.0`) pour que les utilisateurs voient les mises à jour. Un script d'aide est fourni : [`scripts/release.sh`](scripts/release.sh).
 
 ---
 
@@ -169,9 +169,9 @@ Les versions suivent le champ `version` dans `manifest.json`. Avec HACS, publie 
 
 | Problème | Piste |
 |----------|--------|
-| Échec à la configuration | IP/port, pare-feu, et que l’agent écoute sur la bonne interface (pas seulement `127.0.0.1` si HA est ailleurs). |
-| `401` / jeton refusé | Régénère le jeton dans l’app desktop et mets à jour l’intégration. |
-| Liste d’apps lente | Scan PowerShell côté Windows — patience, ou augmente les timeouts côté agent si c’est configurable. |
+| Échec à la configuration | IP/port, pare-feu, et que l'agent écoute sur la bonne interface (pas seulement `127.0.0.1` si HA est ailleurs). |
+| `401` / jeton refusé | Régénère le jeton dans l'app desktop et mets à jour l'intégration. |
+| Liste d'apps lente | Scan PowerShell côté Windows — patience, ou augmente les timeouts côté agent si c'est configurable. |
 
 ---
 
