@@ -1,0 +1,73 @@
+name: "🐛 Bug report"
+description: Report something that isn't working in the Computer Companion integration
+title: "[Bug] "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report this. **Version info** and **logs** make fixes much faster.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: "📝 Summary"
+      description: In one or two sentences, what's going wrong?
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: "✅ Expected behavior"
+      description: What should happen instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: "🔁 Steps to reproduce"
+      description: |
+        Numbered list, as precise as you can (UI path, automation, entity, etc.).
+        Example:
+        1. Go to …
+        2. Click …
+        3. See …
+      placeholder: |
+        1. …
+        2. …
+        3. …
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: "💻 Environment"
+      description: |
+        Please include at least:
+        - **Home Assistant** version (e.g. 2025.4.1)
+        - **Integration** version / Git tag (e.g. v1.2.0 or `main`)
+        - **Computer Companion desktop agent** version or commit (if known)
+        - **Agent host OS** (e.g. Windows 11)
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: "📋 Logs / errors (optional)"
+      description: |
+        Relevant snippets from Home Assistant (**Settings → System → Logs**) or the agent console.  
+        **Redact secrets** (IPs, tokens, passwords).
+      render: shell
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: "✔️ Checklist"
+      options:
+        - label: I searched existing issues and didn't find a duplicate of this problem.
+          required: true

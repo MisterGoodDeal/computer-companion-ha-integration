@@ -1,0 +1,38 @@
+name: "✨ Feature request"
+description: Suggest a new capability or improvement for this integration
+title: "[Feature] "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the **why** behind your idea — it often matters more than the exact implementation.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: "🎯 Problem or use case"
+      description: What workflow are you trying to enable? What's missing today?
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: "💡 Proposed solution (optional)"
+      description: How you imagine it could work (entities, services, UI, etc.).
+    validations:
+      required: false
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: "🔀 Alternatives you've considered (optional)"
+      description: Workarounds, other integrations, scripts, external tools…
+
+  - type: textarea
+    id: context
+    attributes:
+      label: "📎 Additional context (optional)"
+      description: Screenshots, links to desktop-agent docs or API, target Home Assistant version, etc.
