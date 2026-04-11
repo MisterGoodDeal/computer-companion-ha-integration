@@ -67,7 +67,7 @@ PY
 echo "New version: $NEW_VERSION"
 
 git add "$MANIFEST"
-git commit -m "chore: release v${NEW_VERSION}"
+git commit -m "feat: 🔖 Release v${NEW_VERSION}"
 
 TAG="v${NEW_VERSION}"
 git tag -a "$TAG" -m "Release ${TAG}"
